@@ -1,1 +1,1 @@
-# atariAgent
+# atariAgents
