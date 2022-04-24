@@ -9,9 +9,9 @@ import gym
 import os
 from os import walk
 # LunarLander-v2 train_lunar log_lunar train train_Assault log_Assault 
-CHECKPOINT_DIR_assult='./train_Assault/'
+CHECKPOINT_DIR_assult='./train_assult/'
 CHECKPOINT_DIR_lunar='./train_lunar/'
-CHECKPOINT_DIR_space='./train/'
+CHECKPOINT_DIR_space='./train_space/'
 LOG_DIR='./log_Assault/'
 LOG_DIR_Lunar='./log_lunar/'
 
@@ -114,32 +114,163 @@ def train_model(game=None):
     model.learn(total_timesteps=3000000, callback=callback)
     print("Finished Trainging")
 
-def evaluate_model():
+def evaluate_best(game=1):
     # env = make_atari_env('SpaceInvadersNoFrameskip-v4', num_env=1, seed=0)
     # env = VecFrameStack(env, n_stack=4)
-    environment_name = 'LunarLander-v2'
-    env = gym.make(environment_name)
-    env = DummyVecEnv([lambda: env])
-    model= ACER.load("./train_lunar/best_model_phrase3_50000.zip",env=env)
-    # meanreward,std = evaluate_policy(model, env, n_eval_episodes=3, render=True)
+    if game == 1:
+        env = make_atari_env('SpaceInvadersNoFrameskip-v4', num_env=1, seed=0)
+        env = VecFrameStack(env, n_stack=4)
+        model= ACER.load("./train_space/best_model_phrase2_31710000",env=env)
+        meanreward,std = evaluate_policy(model, env, n_eval_episodes=10, render=True)
+        print('Score:{}'.format(meanreward))
+    if game == 2:
+        env = make_atari_env('AssaultNoFrameskip-v0', num_env=1, seed=0)
+        env = VecFrameStack(env, n_stack=4)
+        model= ACER.load("./train_assult/best_model_phrase2_1450000",env=env)
+        meanreward,std = evaluate_policy(model, env, n_eval_episodes=10, render=True)
+        print('Score:{}'.format(meanreward))
+    if game == 3:
+        environment_name = 'LunarLander-v2'
+        env = gym.make(environment_name)
+        env = DummyVecEnv([lambda: env])
+        model= ACER.load("./train_lunar/best_model_phrase2_90000",env=env)
+        meanreward,std = evaluate_policy(model, env, n_eval_episodes=10, render=True)
+        print('Score:{}'.format(meanreward))
+    # environment_name = 'LunarLander-v2'
+    # env = gym.make(environment_name)
+    # env = DummyVecEnv([lambda: env])
+    # model= ACER.load("./train_lunar/best_model_phrase3_50000.zip",env=env)
+    # # meanreward,std = evaluate_policy(model, env, n_eval_episodes=3, render=True)
 
-    obs = env.reset()
-    episodes=10
-    for episode in range(1, episodes+1):
-        done = False
-        score=0
+    # obs = env.reset()
+    # episodes=10
+    # for episode in range(1, episodes+1):
+    #     done = False
+    #     score=0
 
-        while not done:
-            action,_states = model.predict(obs)
-            # print(action)
-            obs,reward,done,info = env.step(action)
-            env.render()
-            score+=reward
-        print('Episode:{} Score:{}'.format(episodes,score[0]))
-    env.close()
+    #     while not done:
+    #         action,_states = model.predict(obs)
+    #         # print(action)
+    #         obs,reward,done,info = env.step(action)
+    #         env.render()
+    #         score+=reward
+    #     print('Episode:{} Score:{}'.format(episodes,score[0]))
+    # env.close()
 
+def evaluate_all(filename,game=1):
+    if game == '1':
+        env = make_atari_env('SpaceInvadersNoFrameskip-v4', num_env=1, seed=0)
+        env = VecFrameStack(env, n_stack=4)
+        model= ACER.load("./train_space/"+filename,env=env)
+    if game == '2':
+        env = make_atari_env('AssaultNoFrameskip-v0', num_env=1, seed=0)
+        env = VecFrameStack(env, n_stack=4)
+        model= ACER.load("./train_assult/"+filename,env=env)
+    if game == '3':
+        environment_name = 'LunarLander-v2'
+        env = gym.make(environment_name)
+        env = DummyVecEnv([lambda: env])
+        model= ACER.load("./train_lunar/"+filename,env=env)
 
+    meanreward,std = evaluate_policy(model, env, n_eval_episodes=1, render=True)
+    return meanreward
+
+state_flag=0
+def menu():
+    print("\ntype relevant commands to use:")
+    print("train")
+    print("evaluate")
+    print("find optimal result(developer used only)")
+    print("type 0 to exit")
+    print(":",end="")
+
+def menu2():
+    print("\ntype number of relevant commands:")
+    print("1. space invaders")
+    print("2. assult")
+    print("3. lunar lander")
+    print("type 9 to return to previous page")
+    print(":",end="")
+
+def result_selector(select=3):
+    f = []
+    results=[]
+    if (select=="1"):
+        filename="train_space"
+        for (dirpath, dirnames, filenames) in walk(filename):
+            f.extend(filenames)
+            break
+
+        for item in f:
+            results.append(evaluate_all(item, game=select))
+        print(max(results))
+        print(results)
+        return max(results)
+
+    if (select=="2"):
+        filename="train_assult"
+        for (dirpath, dirnames, filenames) in walk(filename):
+            f.extend(filenames)
+            break
+
+        for item in f:
+            results.append(evaluate_all(item, game=select))
+        print(max(results))
+        print(results)
+        return max(results)
+
+    if (select=="3"):
+        filename="train_lunar"
+        for (dirpath, dirnames, filenames) in walk(filename):
+            f.extend(filenames)
+            break
+
+        for item in f:
+            results.append(evaluate_all(item, game=select))
+        print(max(results))
+        print(results)
+        return max(results)
+
+while(True):
+    if state_flag==0:
+        menu()
+    if state_flag==1:
+        menu2()
+    if state_flag==2:
+        menu2()
+
+    x = input()
+    commands=x.split(' ')
+    if(commands[0] == '0'):
+        exit()
+    if(commands[0] == 'train'):
+        state_flag=1
+    if(commands[0] == 'evaluate'):
+        state_flag=2
+    if(commands[0] == 'find'):
+        result_selector(commands[1])
+        continue
+    if(state_flag ==1):
+        if(commands[0] == '9'):
+            state_flag=0
+        if(commands[0] == '1'):
+            train_model(1)
+        if(commands[0] == '2'):
+            train_model(2)
+        if(commands[0] == '3'):
+            train_lunar()
+    if(state_flag ==2):
+        if(commands[0] == '9'):
+            state_flag=0
+        if(commands[0] == '1'):
+            evaluate_best(1)
+        if(commands[0] == '2'):
+            evaluate_best(2)
+        if(commands[0] == '3'):
+            evaluate_best(3)
+    else:
+        print("Please type correct command!\n")
 
 # train_model(2)
 # train_lunar()
-evaluate_model()
+# evaluate_model()
