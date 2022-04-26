@@ -1,5 +1,5 @@
 # ACER and DQN agent for atariAgents
-
+Just click download zip files to get all necessary files
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pre-requisite packages. Install two sets of packages in two different virtual environment
