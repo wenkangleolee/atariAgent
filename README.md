@@ -45,3 +45,11 @@ under main menu, type train or evaluate to select wanted function of the program
 then second menu pop up, 
 select wanted game for training by type its game number(1 for space invader; 2 for assult; 3 for lunar lander)
 ```
+## saved weights
+```python
+There are too many weights that cannot be submitted to github due to their filesize
+
+So i select weights of each major training time steps like 10k, 1m, 100m etc. for each games
+
+by defaut, filepath used in evaluate_best() method in ACER_trainer.py is the best weights for each relevant game.
+```
