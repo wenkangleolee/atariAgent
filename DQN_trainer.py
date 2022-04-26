@@ -72,5 +72,6 @@ def loading_trainedAgent():
 
 
 # training_agent()
-# loading_trainedAgent()
 # testing_agent()
+
+# loading_trainedAgent()

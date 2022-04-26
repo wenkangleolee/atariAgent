@@ -17,21 +17,31 @@ pip install -r requirementsforDQN.txt
 ```
 
 ## Usage
+DQN_trainer
 
+assumed pre-requisite packages have been installed in an new virtual environment
 ```python
-import foobar
+uncomment first two methods of bottom three methods to train and test the agent on space invader games
+then
+python DQN_trainer.py
 
-# returns 'words'
-foobar.pluralize('word')
+or 
 
-# returns 'geese'
-foobar.pluralize('goose')
+uncomment the line of save method in train_agent() method, change its saving path to you need, after training is completed saved weights will be stored in given path, use loading_trainedAgent() + testing_agent() to check results
 
-# returns 'phenomenon'
-foobar.singularize('phenomena')
+python DQN_trainer.py
 ```
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+ACER_trainer.py
 
-Please make sure to update tests as appropriate.
+assumed pre-requisite packages have been installed in an new virtual environment
+```bash
+python ACER_trainer.py
+```
+```python
+in terminal, an user interface will pop up
+under main menu, type train or evaluate to select wanted function of the program
+
+then second menu pop up, 
+select wanted game for training by type its game number(1 for space invader; 2 for assult; 3 for lunar lander)
+```
